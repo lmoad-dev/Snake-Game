@@ -1,0 +1,347 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+  <title>Snake Pro Arcade</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@400;500;600;700;800&family=Rajdhani:wght@600;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <div class="background-effects">
+    <div class="ambient-mesh"></div>
+  </div>
+
+  <div class="game-wrapper">
+    <!-- Header -->
+    <header class="game-header">
+      <div class="logo">
+        <div class="logo-icon" aria-hidden="true">
+          <svg class="snake-brand-icon" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+            <defs>
+              <linearGradient id="brandSnakeGrad" x1="4" y1="4" x2="32" y2="32" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="#34d399"/>
+                <stop offset="50%" stop-color="#10b981"/>
+                <stop offset="100%" stop-color="#047857"/>
+              </linearGradient>
+              <linearGradient id="brandSnakeBackdrop" x1="0" y1="0" x2="36" y2="36" gradientUnits="userSpaceOnUse">
+                <stop offset="0%" stop-color="rgba(16, 185, 129, 0.22)"/>
+                <stop offset="100%" stop-color="rgba(5, 150, 105, 0.06)"/>
+              </linearGradient>
+              <radialGradient id="viperEyeGlow" cx="0.5" cy="0.5" r="0.5">
+                <stop offset="0%" stop-color="#fef08a"/>
+                <stop offset="100%" stop-color="#f59e0b"/>
+              </radialGradient>
+            </defs>
+            <rect x="2" y="2" width="32" height="32" rx="9" fill="url(#brandSnakeBackdrop)" stroke="rgba(16, 185, 129, 0.35)" stroke-width="1.2"/>
+            <path d="M10 25C9 23 9 20.5 10.5 18C12 15.5 15.5 15 17 13.5C18.5 12 18.8 10 18 8.5C17.2 7 15.5 6.5 14 7" stroke="url(#brandSnakeGrad)" stroke-width="3" stroke-linecap="round"/>
+            <path d="M14 28.5C17.5 28.5 20.5 26.5 21.5 23C22.8 18.5 18 16.5 20.5 13.5C21.8 12 24.2 11.2 26 12.5" stroke="url(#brandSnakeGrad)" stroke-width="3" stroke-linecap="round"/>
+            <path d="M21 7.5L27.5 11.5L23.5 15.5L19 12L21 7.5Z" fill="url(#brandSnakeGrad)"/>
+            <circle cx="23" cy="11.5" r="1.4" fill="url(#viperEyeGlow)"/>
+            <circle cx="23.3" cy="11.5" r="0.7" fill="#091b15"/>
+            <path d="M27.5 11.5L30.5 10.5M27.5 11.5L30.5 12.5" stroke="#ef4444" stroke-width="1.2" stroke-linecap="round"/>
+          </svg>
+        </div>
+        <h1>SNAKE<span class="highlight">PRO</span></h1>
+      </div>
+      
+      <div class="quick-actions">
+        <!-- Live speed quick button (toggles quick speed panel anytime) -->
+        <button id="speed-toggle-btn" class="pill-btn" aria-label="Toggle Speed Controls" title="Quick Speed Settings">
+          <span class="pill-icon" aria-hidden="true">
+            <svg class="svg-icon speed-svg" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11.5 1.5L4 10.5H10L8.5 18.5L16 9.5H10L11.5 1.5Z" fill="currentColor" stroke="currentColor" stroke-width="0.8" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span id="header-speed-badge">90ms</span>
+        </button>
+
+        <button id="skin-toggle-btn" class="icon-btn" aria-label="Choose Skin" title="Customize Snake Skin">
+          <span class="skin-icon" aria-hidden="true">
+            <svg class="svg-icon skin-svg" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M10 2.5C5.86 2.5 2.5 5.86 2.5 10C2.5 14.14 5.86 17.5 10 17.5C10.69 17.5 11.25 16.94 11.25 16.25C11.25 15.93 11.12 15.64 10.92 15.42C10.71 15.2 10.58 14.91 10.58 14.58C10.58 13.89 11.14 13.33 11.83 13.33H13.33C15.63 13.33 17.5 11.46 17.5 9.17C17.5 5.48 14.14 2.5 10 2.5Z" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+              <circle cx="6.5" cy="9.5" r="1.3" fill="#10b981"/>
+              <circle cx="9.5" cy="6.5" r="1.3" fill="#38bdf8"/>
+              <circle cx="13.5" cy="8" r="1.3" fill="#f59e0b"/>
+              <circle cx="14" cy="11.5" r="1.3" fill="#ef4444"/>
+            </svg>
+          </span>
+        </button>
+
+        <button id="sound-btn" class="icon-btn" aria-label="Toggle Sound" title="Toggle Sound (M)">
+          <span class="sound-icon" aria-hidden="true">
+            <svg class="svg-icon sound-svg" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M3.5 7.5H6.5L11 4V16L6.5 12.5H3.5C2.95 12.5 2.5 12.05 2.5 11.5V8.5C2.5 7.95 2.95 7.5 3.5 7.5Z" fill="currentColor"/>
+              <path d="M14 6.5C15.2 7.6 16 9.2 16 10C16 10.8 15.2 12.4 14 13.5" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+              <path d="M16.5 4C18.2 5.7 19.2 7.7 19.2 10C19.2 12.3 18.2 14.3 16.5 16" stroke="currentColor" stroke-width="1.7" stroke-linecap="round"/>
+            </svg>
+          </span>
+        </button>
+        <button id="pause-btn" class="icon-btn" aria-label="Pause Game" title="Pause Game (Space)">
+          <span class="pause-icon" aria-hidden="true">
+            <svg class="svg-icon pause-svg" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <rect x="5.5" y="4" width="3" height="12" rx="1.5" fill="currentColor"/>
+              <rect x="11.5" y="4" width="3" height="12" rx="1.5" fill="currentColor"/>
+            </svg>
+          </span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Score Dashboard -->
+    <div class="scoreboard">
+      <div class="score-card">
+        <span class="score-label">SCORE</span>
+        <span id="current-score" class="score-value">0</span>
+      </div>
+      <div class="score-card">
+        <span class="score-label">BEST</span>
+        <span id="high-score" class="score-value">0</span>
+      </div>
+      <div class="score-card">
+        <span class="score-label">LENGTH</span>
+        <span id="snake-length" class="score-value">3</span>
+      </div>
+    </div>
+
+    <!-- Quick In-Game Speed Control Bar (Always accessible, adjustable mid-game) -->
+    <div id="quick-speed-bar" class="quick-speed-bar">
+      <div class="speed-bar-header">
+        <div class="speed-bar-label">
+          <span class="speed-icon-mini" aria-hidden="true">
+            <svg class="svg-icon speed-svg" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <path d="M11.5 1.5L4 10.5H10L8.5 18.5L16 9.5H10L11.5 1.5Z" fill="currentColor" stroke="currentColor" stroke-width="0.8" stroke-linejoin="round"/>
+            </svg>
+          </span>
+          <span>SNAKE SPEED:</span>
+          <strong id="live-speed-label">90ms (Normal)</strong>
+        </div>
+        <div class="speed-rate-hint" id="speed-moves-sec">11 moves/sec</div>
+      </div>
+      <div class="speed-slider-row">
+        <span class="speed-bound slow">Chill</span>
+        <input type="range" id="speed-slider" class="speed-slider" min="40" max="150" step="5" value="90" aria-label="Snake Speed Slider">
+        <span class="speed-bound fast">Ludicrous</span>
+      </div>
+      <div class="diff-buttons preset-buttons">
+        <button class="diff-btn" data-speed="150">CHILL</button>
+        <button class="diff-btn" data-speed="120">RELAX</button>
+        <button class="diff-btn active" data-speed="90">NORMAL</button>
+        <button class="diff-btn" data-speed="65">FAST</button>
+        <button class="diff-btn" data-speed="40">LUDICROUS</button>
+      </div>
+    </div>
+
+    <!-- Canvas Container with Overlays -->
+    <div class="canvas-container">
+      <canvas id="game-canvas" width="440" height="440"></canvas>
+
+      <!-- Start Overlay Screen -->
+      <div id="start-screen" class="overlay">
+        <div class="overlay-content">
+          <div class="hero-emblem" aria-hidden="true">
+            <svg class="snake-hero-icon" viewBox="0 0 48 48" fill="none" xmlns="http://www.w3.org/2000/svg">
+              <defs>
+                <linearGradient id="heroSnakeGrad" x1="4" y1="4" x2="44" y2="44" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="#34d399"/>
+                  <stop offset="50%" stop-color="#10b981"/>
+                  <stop offset="100%" stop-color="#047857"/>
+                </linearGradient>
+                <linearGradient id="heroBadgeBackdrop" x1="0" y1="0" x2="48" y2="48" gradientUnits="userSpaceOnUse">
+                  <stop offset="0%" stop-color="rgba(16, 185, 129, 0.25)"/>
+                  <stop offset="100%" stop-color="rgba(5, 150, 105, 0.08)"/>
+                </linearGradient>
+                <radialGradient id="heroEyeGlow" cx="0.5" cy="0.5" r="0.5">
+                  <stop offset="0%" stop-color="#fef08a"/>
+                  <stop offset="100%" stop-color="#f59e0b"/>
+                </radialGradient>
+              </defs>
+              <rect x="3" y="3" width="42" height="42" rx="13" fill="url(#heroBadgeBackdrop)" stroke="rgba(16, 185, 129, 0.4)" stroke-width="1.8"/>
+              <path d="M13 34C11.5 31.5 11.5 28 13.5 24.5C15.5 21 20 20.5 22.5 18.5C25 16.5 25.5 14 24.5 12C23.5 10 21 9.5 19 10" stroke="url(#heroSnakeGrad)" stroke-width="3.8" stroke-linecap="round"/>
+              <path d="M18.5 38.5C23 38.5 27 35.5 28.5 31C30.2 25 24 22.5 27.5 18C29.2 16 32.5 15 35 17" stroke="url(#heroSnakeGrad)" stroke-width="3.8" stroke-linecap="round"/>
+              <path d="M28 10L37 15.5L31.5 21L25.5 16.5L28 10Z" fill="url(#heroSnakeGrad)"/>
+              <circle cx="31" cy="15.5" r="1.8" fill="url(#heroEyeGlow)"/>
+              <circle cx="31.4" cy="15.5" r="0.9" fill="#091b15"/>
+              <path d="M37 15.5L41.5 14M37 15.5L41.5 17" stroke="#ef4444" stroke-width="1.6" stroke-linecap="round"/>
+            </svg>
+          </div>
+          <div class="arcade-badge">ARCADE EDITION</div>
+          <h2>READY TO SLITHER?</h2>
+          <p class="subtitle">Guide your snake, feast on apples, and conquer the grid.</p>
+
+          <!-- Skin Selection -->
+          <div class="custom-group">
+            <span class="group-title">CHOOSE SNAKE SKIN</span>
+            <div class="skin-selector" id="start-skin-selector">
+              <button class="skin-swatch active" data-skin="emerald" title="Emerald Viper">
+                <span class="swatch-preview emerald"></span>
+                <span class="swatch-name">Emerald</span>
+              </button>
+              <button class="skin-swatch" data-skin="obsidian" title="Obsidian Shadow">
+                <span class="swatch-preview obsidian"></span>
+                <span class="swatch-name">Obsidian</span>
+              </button>
+              <button class="skin-swatch" data-skin="python" title="Desert Python">
+                <span class="swatch-preview python"></span>
+                <span class="swatch-name">Python</span>
+              </button>
+              <button class="skin-swatch" data-skin="coral" title="Coral Banded">
+                <span class="swatch-preview coral"></span>
+                <span class="swatch-name">Coral</span>
+              </button>
+              <button class="skin-swatch" data-skin="arctic" title="Arctic Glacier">
+                <span class="swatch-preview arctic"></span>
+                <span class="swatch-name">Arctic</span>
+              </button>
+            </div>
+          </div>
+
+          <button id="start-btn" class="btn primary-btn">START GAME</button>
+          <div class="tip-text">Press <kbd>Space</kbd> or <kbd>Enter</kbd> to begin</div>
+        </div>
+      </div>
+
+      <!-- Pause Overlay Screen -->
+      <div id="pause-screen" class="overlay hidden">
+        <div class="overlay-content">
+          <h2>GAME PAUSED</h2>
+          <p class="subtitle">Adjust your settings anytime or take a breath.</p>
+
+          <!-- Quick Skin Switcher in Pause Screen -->
+          <div class="custom-group">
+            <span class="group-title">CHANGE SKIN</span>
+            <div class="skin-selector" id="pause-skin-selector">
+              <button class="skin-swatch active" data-skin="emerald" title="Emerald Viper">
+                <span class="swatch-preview emerald"></span>
+                <span class="swatch-name">Emerald</span>
+              </button>
+              <button class="skin-swatch" data-skin="obsidian" title="Obsidian Shadow">
+                <span class="swatch-preview obsidian"></span>
+                <span class="swatch-name">Obsidian</span>
+              </button>
+              <button class="skin-swatch" data-skin="python" title="Desert Python">
+                <span class="swatch-preview python"></span>
+                <span class="swatch-name">Python</span>
+              </button>
+              <button class="skin-swatch" data-skin="coral" title="Coral Banded">
+                <span class="swatch-preview coral"></span>
+                <span class="swatch-name">Coral</span>
+              </button>
+              <button class="skin-swatch" data-skin="arctic" title="Arctic Glacier">
+                <span class="swatch-preview arctic"></span>
+                <span class="swatch-name">Arctic</span>
+              </button>
+            </div>
+          </div>
+
+          <div class="overlay-buttons">
+            <button id="resume-btn" class="btn primary-btn">RESUME</button>
+            <button id="restart-from-pause-btn" class="btn secondary-btn">RESTART</button>
+          </div>
+        </div>
+      </div>
+
+      <!-- Game Over Overlay Screen -->
+      <div id="gameover-screen" class="overlay hidden">
+        <div class="overlay-content">
+          <div class="gameover-badge">GAME OVER</div>
+          <div id="new-record-tag" class="record-badge hidden">
+            <svg class="record-trophy-svg" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+              <path d="M5.5 3.5H14.5V8.5C14.5 11 12.5 13 10 13C7.5 13 5.5 11 5.5 8.5V3.5Z" fill="#f59e0b" stroke="#fcd34d" stroke-width="1.2"/>
+              <path d="M5.5 5H3C2.45 5 2 5.45 2 6C2 7.66 3.34 9 5 9H5.5" stroke="#fcd34d" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M14.5 5H17C17.55 5 18 5.45 18 6C18 7.66 16.66 9 15 9H14.5" stroke="#fcd34d" stroke-width="1.2" stroke-linecap="round"/>
+              <path d="M10 13V16M7 16.5H13" stroke="#fcd34d" stroke-width="1.4" stroke-linecap="round"/>
+              <path d="M10 6L10.8 7.6L12.5 7.9L11.3 9.1L11.6 10.8L10 10L8.4 10.8L8.7 9.1L7.5 7.9L9.2 7.6L10 6Z" fill="#ffffff"/>
+            </svg>
+            <span>NEW BEST RECORD!</span>
+          </div>
+          <div class="final-score-display">
+            <span class="final-score-label">FINAL SCORE</span>
+            <span id="final-score" class="final-score-value">0</span>
+          </div>
+
+          <div class="stats-mini-summary">
+            <div class="mini-stat">
+              <span class="stat-icon apple-stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 3.5C6 1.8 3 2.5 2.2 4.8C1.2 7.5 3 12 5.5 13.5C6.7 14.2 7.4 13.8 8 13.8C8.6 13.8 9.3 14.2 10.5 13.5C13 12 14.8 7.5 13.8 4.8C13 2.5 10 1.8 8 3.5Z" fill="#fb7185"/>
+                  <path d="M8 3.5C8.3 2 9.5 1.2 10.5 1" stroke="#34d399" stroke-width="1.3" stroke-linecap="round"/>
+                </svg>
+              </span>
+              <span>Apples:</span>
+              <strong id="stat-apples">0</strong>
+            </div>
+            <div class="mini-stat">
+              <span class="stat-icon star-stat-icon" aria-hidden="true">
+                <svg viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M8 1.5L9.9 5.5L14.3 6.1L11.1 9.2L11.9 13.5L8 11.4L4.1 13.5L4.9 9.2L1.7 6.1L6.1 5.5L8 1.5Z" fill="#f59e0b" stroke="#fcd34d" stroke-width="0.8"/>
+                </svg>
+              </span>
+              <span>Bonuses:</span>
+              <strong id="stat-bonuses">0</strong>
+            </div>
+          </div>
+
+          <div class="overlay-buttons">
+            <button id="retry-btn" class="btn primary-btn">PLAY AGAIN</button>
+          </div>
+          <div class="tip-text">Press <kbd>Space</kbd> or <kbd>Enter</kbd> to replay</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Mobile Virtual D-Pad Controls -->
+    <div class="mobile-controls" id="mobile-controls">
+      <div class="dpad">
+        <button class="dpad-btn up" data-dir="UP" aria-label="Up">
+          <svg viewBox="0 0 24 24" fill="none" class="dpad-arrow" aria-hidden="true">
+            <path d="M6 15L12 9L18 15" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="dpad-btn left" data-dir="LEFT" aria-label="Left">
+          <svg viewBox="0 0 24 24" fill="none" class="dpad-arrow" aria-hidden="true">
+            <path d="M15 6L9 12L15 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="dpad-btn center-dot" disabled aria-hidden="true"></button>
+        <button class="dpad-btn right" data-dir="RIGHT" aria-label="Right">
+          <svg viewBox="0 0 24 24" fill="none" class="dpad-arrow" aria-hidden="true">
+            <path d="M9 6L15 12L9 18" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+        <button class="dpad-btn down" data-dir="DOWN" aria-label="Down">
+          <svg viewBox="0 0 24 24" fill="none" class="dpad-arrow" aria-hidden="true">
+            <path d="M6 9L12 15L18 9" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"/>
+          </svg>
+        </button>
+      </div>
+    </div>
+
+    <!-- Instructions / Desktop Key Controls Guide -->
+    <footer class="game-footer">
+      <div class="controls-guide">
+        <div class="guide-item">
+          <span class="keys"><kbd>W</kbd><kbd>A</kbd><kbd>S</kbd><kbd>D</kbd> or <kbd>Arrows</kbd></span>
+          <span class="guide-label">Move</span>
+        </div>
+        <div class="guide-item">
+          <span class="keys"><kbd>[</kbd> <kbd>]</kbd> or <kbd>1</kbd>–<kbd>5</kbd></span>
+          <span class="guide-label">Speed</span>
+        </div>
+        <div class="guide-item">
+          <span class="keys"><kbd>Space</kbd></span>
+          <span class="guide-label">Pause</span>
+        </div>
+        <div class="guide-item">
+          <span class="keys"><kbd>M</kbd></span>
+          <span class="guide-label">Mute</span>
+        </div>
+      </div>
+    </footer>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
